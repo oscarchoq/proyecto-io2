@@ -91,11 +91,33 @@ const useCriticalRoute = () => {
 
   }
 
+  const generate_diagram = (tasks) => {
+    let dotGraph = `digraph G {
+      rankdir=LR;
+      node [style="filled"];
+    \n`
+
+    tasks.forEach(task => {
+      const nodeStyle = task.isCriticalPath ? 'fillcolor="#e35252"' : ''
+
+      dotGraph += `  ${task.name} [label="${task.name}\\n(${task.duration})", ${nodeStyle}];\n`
+
+      task.dependencies.forEach(dep => {
+        dotGraph += `  ${dep} -> ${task.name};\n`
+      })
+
+      
+    })
+    dotGraph += '}'
+    return dotGraph
+  }
+
 
   return {
     getActividad,
     activity_format,
-    cal_critical_route
+    cal_critical_route,
+    generate_diagram
   }
 }
 
