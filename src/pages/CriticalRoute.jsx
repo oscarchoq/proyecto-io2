@@ -33,12 +33,12 @@ const CriticalRoute = () => {
     <>
 
       <div className="max-w-5xl mx-auto">
-        <h1 className='font-bold text-3xl text-center my-8'>Ruta critica CPM/PERT</h1>
+        <h1 className='font-bold text-3xl text-center my-8'>Ruta critica CPM</h1>
 
         <div className="my-5 p-5 flex justify-center mx-auto">
 
           <form onSubmit={onSubmit} className="overflow-auto">
-            <button onClick={() => setShowModal(true)} className='bg-green-800 px-2.5 rounded font-bold text-white py-2 mb-5'>Settings</button>
+            <button onClick={() => setShowModal(true)} className='bg-green-700 px-2.5 rounded font-bold text-white py-2 mb-5'>Settings</button>
             {setting && (
               <>
 
@@ -108,7 +108,7 @@ const CriticalRoute = () => {
                   </tbody>
                 </table>
                 {/* <p className="text-red-800 font-semibold}">Escribe bien tus predecesores</p> */}
-                <button className='bg-green-800 my-5 px-2.5 rounded font-bold text-white py-2'>CALCULAR</button>
+                <button className='bg-green-700 my-5 px-2.5 rounded font-bold text-white py-2'>CALCULAR</button>
               </>
             )}
           </form>

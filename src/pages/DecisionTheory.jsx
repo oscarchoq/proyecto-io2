@@ -11,91 +11,156 @@ const DecisionTheory = () => {
 
   const [showModal, setShowModal] = useState(false)
   const [settings, setSettings] = useState()
+  const [result, setResult] = useState({})
 
   const onSubmit = handleSubmit(values => {
-    console.log("que loco", values)
     const res = processData(values)
-    console.log("formateo loco", res)
-    const abc =  cal_decision_theory(res)
-    console.log(abc)
+    const result = cal_decision_theory(res)
+    setResult(result)
   })
 
   useEffect(() => {
     reset()
   }, [settings])
 
-  const num = 4;
-
   return (
     <>
 
       <div>
-        <h1 className='font-bold text-3xl text-center my-8'>Teoria de decisiones</h1>
+        <h1 className='font-bold text-3xl text-center my-8'>Teoria de decisiones (AHP)</h1>
 
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto px-8 justify-center items-center">
           <button onClick={() => setShowModal(true)} className='bg-green-800 px-2.5 rounded font-bold text-white py-2 mb-5'>Settings</button>
 
 
-          <form onSubmit={onSubmit}>
+          {settings && (
+            <form onSubmit={onSubmit}>
 
-            <span className="font-bold">Matriz principal</span>
+              <span className="font-bold">Matriz principal</span>
 
-            <div className="flex flex-col">
-              {Array.from({ length: settings?.num_criterios }).map((_, rowIndex) => (
-                <div key={rowIndex} className="flex flex-wrap">
-                  {Array.from({ length: settings?.num_criterios }).map((_, colIndex) => (
-                    <div key={colIndex} className="w-12 h-12 border border-gray-300 flex items-center justify-center">
-                      <input
-                        type="number"
-                        className="w-full h-full text-center"
-                        min={0}
-                        step={0.0001}
-                        {...register(`principal1-${rowIndex}-${colIndex}`, { required: true, min: 0 })}
-                      />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            <span className="font-bold pt-5">Alternativas</span>
-
-            <div className="grid md:grid-cols-4">
-              {Array.from({ length: settings?.num_criterios }).map((_, i) => (
-                <div key={i} className="">
-                  <span>Alternativa {i + 1}</span>
-                  <div className="flex flex-col">
-                    {Array.from({ length: settings?.num_criterios }).map((_, rowIndex) => (
-                      <div key={rowIndex} className="flex flex-wrap">
-                        {Array.from({ length: settings?.num_criterios }).map((_, colIndex) => (
-                          <div key={colIndex} className="w-12 h-12 border border-gray-300 flex items-center justify-center">
-                            <input
-                              type="number"
-                              className="w-full h-full text-center"
-                              min={0}
-                              step={0.0001}
-                              {...register(`alternativa${i + 1}-${rowIndex}-${colIndex}`, { required: true, min: 0})}
-                            />
-                          </div>
-                        ))}
+              <div className="grid">
+                {Array.from({ length: settings?.num_criterios }).map((_, rowIndex) => (
+                  <div key={rowIndex} className="flex flex-wrap">
+                    {Array.from({ length: settings?.num_criterios }).map((_, colIndex) => (
+                      <div key={colIndex} className="w-16 sm:w-20 h-8 border border-gray-300 flex items-center justify-center">
+                        <input
+                          type="number"
+                          className="w-full h-full text-center"
+                          min={0}
+                          step={0.0001}
+                          {...register(`principal1-${rowIndex}-${colIndex}`, { required: true, min: 0 })}
+                        />
                       </div>
                     ))}
                   </div>
-                </div>
+                ))}
+              </div>
 
-              ))}
+              <span className="font-bold pt-5">Alternativas</span>
 
-            </div>
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
+                {Array.from({ length: settings?.num_criterios }).map((_, i) => (
+                  <div key={i} className="">
+                    <span>Alternativa {i + 1}</span>
+                    <div className="grid">
+                      {Array.from({ length: settings?.num_criterios }).map((_, rowIndex) => (
+                        <div key={rowIndex} className="flex flex-wrap">
+                          {Array.from({ length: settings?.num_criterios }).map((_, colIndex) => (
+                            <div key={colIndex} className="w-16 sm:w-20 h-8 border border-gray-300 flex items-center justify-center">
+                              <input
+                                type="number"
+                                className="w-full h-full text-center"
+                                min={0}
+                                step={0.0001}
+                                {...register(`alternativa${i + 1}-${rowIndex}-${colIndex}`, { required: true, min: 0 })}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                ))}
+
+              </div>
 
 
-            <button className='bg-green-800 px-2.5 rounded font-bold text-white py-2 my-5'>Calcular</button>
+              <button className='bg-green-700 px-2.5 rounded font-bold text-white py-2 my-5'>Calcular</button>
 
 
 
-          </form>
-
+            </form>
+          )}
 
         </div>
+
+        {result?.matrizSolution && (
+          <>
+            <h2 className="text-xl font-bold text-center">Resultados</h2>
+            <div className="max-w-7xl mx-auto flex justify-center items-center text-lg">
+
+
+              <div className="flex items-center mt-4">
+
+                <div className="p-2 mb-4">
+                  <h3 className="font-bold mb-2 text-center">Alternativas</h3>
+                  {result?.matrizSolution.map((fila, rowIndex) => (
+                    <div key={rowIndex} className="flex flex-wrap">
+                      {fila.map((valor, colIndex) => (
+                        <div key={colIndex} className="w-16 sm:w-20 h-8 border border-gray-300 flex items-center justify-center">
+                          <span className="bg-white w-full h-full text-center p-1">
+                            {valor.toFixed(3)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Operador de multiplicación */}
+                <div className="flex items-center justify-center mb-4">
+                  <span className="text-2xl font-bold">x</span>
+                </div>
+
+                {/* Matriz B (vectorPrincipalFormato) */}
+                <div className="p-2 mb-4">
+                  <h3 className="font-bold mb-2 text-center">Vector propio</h3>
+                  {result?.vectorPrincipalFormato.map((fila, rowIndex) => (
+                    <div key={rowIndex} className="flex flex-wrap">
+                      {fila.map((valor, colIndex) => (
+                        <div key={colIndex} className="w-16 sm:w-20 h-8 border border-gray-300 flex items-center justify-center">
+                          <span className="bg-white w-full h-full text-center p-1">
+                            {valor.toFixed(3)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-center mb-4">
+                  <span className="text-2xl font-bold">=</span>
+                </div>
+
+                <div className="p-2 mb-4">
+                  <h3 className="font-bold mb-2 text-center">Resultado</h3>
+                  {result?.respuestaFinal.map((valor, rowIndex) => (
+                    <div key={rowIndex} className="w-16 sm:w-20 h-8 border border-gray-300 flex items-center justify-center">
+                      <span className={`bg-white w-full h-full text-center p-1 ${result?.solucion === valor ? 'font-extrabold' : ''}`}>
+                        {valor.toFixed(3)}
+                      </span>
+                    </div>
+                  ))}
+
+                </div>
+
+              </div>
+            </div>
+          </>
+
+
+        )}
 
       </div>
 
@@ -132,7 +197,7 @@ const Settings = ({ setSetting, onClose }) => {
           {errors.num_criterios && <p className="text-red-500 text-sm">{errors.num_criterios.message}</p>}
         </div>
         <div className="flex">
-          <button className='bg-green-800 px-4 rounded font-bold text-white py-1.5 mx-auto'>Guardar</button>
+          <button className='bg-green-700 px-4 rounded font-bold text-white py-1.5 mx-auto'>Guardar</button>
         </div>
       </form>
     </>
